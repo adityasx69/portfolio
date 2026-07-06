@@ -12,18 +12,8 @@ import LiveStats from "./components/LiveStats.jsx";
 import Skills from "./components/Skills.jsx";
 import Certifications from "./components/Certifications.jsx";
 import Contact from "./components/Contact.jsx";
-
-function Backdrop() {
-  return (
-    <div className="fixed inset-0 -z-10" aria-hidden="true">
-      {/* faint blueprint grid, faded toward the edges */}
-      <div className="bg-grid absolute inset-0" />
-      {/* two very low-key color washes so pure black doesn't feel flat */}
-      <div className="absolute -top-40 right-[-15%] h-[34rem] w-[34rem] rounded-full bg-acid/[0.045] blur-[130px]" />
-      <div className="absolute bottom-[-20%] left-[-10%] h-[30rem] w-[30rem] rounded-full bg-fog/[0.05] blur-[130px]" />
-    </div>
-  );
-}
+import Backdrop from "./components/Backdrop.jsx";
+import CertGallery from "./pages/CertGallery.jsx";
 
 function Preloader({ done }) {
   const [count, setCount] = useState(0);
@@ -55,6 +45,13 @@ function Preloader({ done }) {
 }
 
 export default function App() {
+  // tiny path router — /certificates gets its own page, everything else is home
+  const path = window.location.pathname.replace(/\/+$/, "") || "/";
+  if (path === "/certificates") return <CertGallery />;
+  return <Home />;
+}
+
+function Home() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {

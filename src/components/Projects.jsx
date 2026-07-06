@@ -24,7 +24,10 @@ const PROJECTS = [
     tag: "frontend · live",
     desc: "Real-time movie discovery platform where trending rankings update from live user search activity. Debounced search over the TMDB API with Appwrite handling analytics and storage.",
     stack: ["React", "Vite", "Tailwind", "Appwrite", "TMDB"],
-    links: [["github", "https://github.com/adityasx69/web-dev/tree/main/react/movie-app"]],
+    links: [
+      ["live", "https://movie.projects.adityasaraswat.me/"],
+      ["github", "https://github.com/adityasx69/web-dev/tree/main/react/movie-app"],
+    ],
   },
 ];
 

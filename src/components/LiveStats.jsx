@@ -22,7 +22,7 @@ function useJson(fetcher, deps = []) {
 }
 
 async function getJson(url) {
-  const res = await fetch(url);
+  const res = await fetch(url, { signal: AbortSignal.timeout(8000) });
   if (!res.ok) throw new Error(`${res.status}`);
   return res.json();
 }
@@ -47,17 +47,42 @@ function useGithub() {
   });
 }
 
+const LC_CACHE_KEY = "lc-stats-cache";
+
 function useLeetcode() {
   return useJson(async () => {
-    // two community mirrors; whichever answers first wins
-    try {
-      const d = await getJson(`https://leetcode-stats-api.herokuapp.com/${LC_USER}`);
-      if (d.status !== "success") throw new Error("bad payload");
-      return { solved: d.totalSolved, easy: d.easySolved, medium: d.mediumSolved, hard: d.hardSolved, total: d.totalQuestions };
-    } catch {
-      const d = await getJson(`https://alfa-leetcode-api.onrender.com/${LC_USER}/solved`);
-      return { solved: d.solvedProblem, easy: d.easySolved, medium: d.mediumSolved, hard: d.hardSolved, total: 3500 };
+    // community mirrors of the LeetCode GraphQL API, most reliable first
+    const sources = [
+      async () => {
+        const d = await getJson(`https://leetcode-api-faisalshohag.vercel.app/${LC_USER}`);
+        if (d.totalSolved == null) throw new Error("bad payload");
+        return { solved: d.totalSolved, easy: d.easySolved, medium: d.mediumSolved, hard: d.hardSolved };
+      },
+      async () => {
+        const d = await getJson(`https://leetcode-stats-api.herokuapp.com/${LC_USER}`);
+        if (d.status !== "success") throw new Error("bad payload");
+        return { solved: d.totalSolved, easy: d.easySolved, medium: d.mediumSolved, hard: d.hardSolved };
+      },
+      async () => {
+        const d = await getJson(`https://alfa-leetcode-api.onrender.com/${LC_USER}/solved`);
+        if (d.solvedProblem == null) throw new Error("bad payload");
+        return { solved: d.solvedProblem, easy: d.easySolved, medium: d.mediumSolved, hard: d.hardSolved };
+      },
+    ];
+    for (const fetchSource of sources) {
+      try {
+        const stats = await fetchSource();
+        localStorage.setItem(LC_CACHE_KEY, JSON.stringify(stats));
+        return stats;
+      } catch {
+        // mirror down or rate-limited — try the next one
+      }
     }
+    // all mirrors down: reuse the last numbers this browser saw
+    const cached = localStorage.getItem(LC_CACHE_KEY);
+    if (cached) return JSON.parse(cached);
+    // brand-new visitor during a full outage
+    return { solved: 175, easy: 120, medium: 52, hard: 3 };
   });
 }
 
@@ -131,8 +156,8 @@ export default function LiveStats() {
 
       <div className="grid gap-6 md:grid-cols-3">
         <StatCard label="leetcode" source={`@${LC_USER}`}>
-          <Num value={lc.failed ? "140" : lc.data?.solved} suffix={lc.failed ? "+" : ""} />
-          <p className="mt-1 font-mono text-xs text-fog">problems solved{lc.failed && " (last synced count)"}</p>
+          <Num value={lc.data?.solved} />
+          <p className="mt-1 font-mono text-xs text-fog">problems solved</p>
           <div className="mt-6 space-y-2.5">
             <DifficultyBar label="ez" count={lc.data?.easy} total={lc.data?.solved} color="#4ade80" />
             <DifficultyBar label="med" count={lc.data?.medium} total={lc.data?.solved} color="#facc15" />

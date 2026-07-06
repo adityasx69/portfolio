@@ -63,10 +63,22 @@ function useLeetcode() {
 
 function useCodeforces() {
   return useJson(async () => {
-    const d = await getJson(`https://codeforces.com/api/user.info?handles=${CF_USER}`);
-    if (d.status !== "OK") throw new Error("bad payload");
-    const u = d.result[0];
-    return { rating: u.rating, maxRating: u.maxRating, rank: u.rank ?? "unrated" };
+    const [info, status] = await Promise.all([
+      getJson(`https://codeforces.com/api/user.info?handles=${CF_USER}`),
+      getJson(`https://codeforces.com/api/user.status?handle=${CF_USER}`).catch(() => null),
+    ]);
+    if (info.status !== "OK") throw new Error("bad payload");
+    const u = info.result[0];
+    // count unique problems with at least one accepted submission
+    let solved = null;
+    if (status?.status === "OK") {
+      const ok = new Set();
+      status.result.forEach((s) => {
+        if (s.verdict === "OK") ok.add(`${s.problem.contestId}-${s.problem.index}`);
+      });
+      solved = ok.size;
+    }
+    return { rating: u.rating, maxRating: u.maxRating, rank: u.rank ?? "unrated", solved };
   });
 }
 
@@ -151,6 +163,10 @@ export default function LiveStats() {
           <Num value={cf.failed ? "—" : cf.data?.rating ?? "unrated"} />
           <p className="mt-1 font-mono text-xs text-fog">current rating</p>
           <div className="mt-6 space-y-2 font-mono text-xs">
+            <div className="flex justify-between border-b border-line pb-2">
+              <span className="text-fog">problems solved</span>
+              <span className="text-bone">{cf.data?.solved ?? "–"}</span>
+            </div>
             <div className="flex justify-between border-b border-line pb-2">
               <span className="text-fog">max rating</span>
               <span className="text-bone">{cf.data?.maxRating ?? "–"}</span>

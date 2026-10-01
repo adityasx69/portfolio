@@ -14,6 +14,10 @@ import Certifications from "./components/Certifications.jsx";
 import Contact from "./components/Contact.jsx";
 import Backdrop from "./components/Backdrop.jsx";
 import CertGallery from "./pages/CertGallery.jsx";
+import Maintenance from "./pages/Maintenance.jsx";
+
+// flip to false to bring the full portfolio back
+const MAINTENANCE_MODE = true;
 
 function Preloader({ done }) {
   const [count, setCount] = useState(0);
@@ -45,6 +49,8 @@ function Preloader({ done }) {
 }
 
 export default function App() {
+  if (MAINTENANCE_MODE) return <Maintenance />;
+
   // tiny path router — /certificates gets its own page, everything else is home
   const path = window.location.pathname.replace(/\/+$/, "") || "/";
   if (path === "/certificates") return <CertGallery />;

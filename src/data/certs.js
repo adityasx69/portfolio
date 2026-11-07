@@ -2,6 +2,16 @@
 // and the /certificates gallery. Images live in public/certs/.
 export const CERTS = [
   {
+    id: "nptel-os-fundamentals",
+    name: "Operating System Fundamentals",
+    issuer: "NPTEL · IIT Kharagpur",
+    date: "jul–oct 2026",
+    credId: "NPTEL26CS156S656501566",
+    tag: "certification",
+    image: "/certs/nptel-operating-system-fundamentals.png",
+    document: "/certs/nptel-operating-system-fundamentals.pdf",
+  },
+  {
     id: "ccna-ensa",
     name: "CCNA: Enterprise Networking, Security, and Automation",
     issuer: "Cisco Networking Academy",
@@ -69,7 +79,7 @@ export const CERTS = [
   },
   {
     id: "nptel-java",
-    name: "Programming in Java",
+    name: "Programming in Java (Elite)",
     issuer: "NPTEL · IIT Kharagpur",
     date: "jul–oct 2025",
     tag: "certification",
@@ -78,7 +88,7 @@ export const CERTS = [
   {
     id: "acm-hacks",
     name: "ACM Hacks 9.0 — Finalist",
-    issuer: "ranked among the top teams of 60",
+    issuer: "Finalist · top teams out of 60 participating",
     tag: "achievement",
     image: "/certs/acm-hacks.jpg",
   },

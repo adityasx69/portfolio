@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import Backdrop from "../components/Backdrop.jsx";
-import Cursor from "../components/Cursor.jsx";
 import Reveal from "../components/Reveal.jsx";
 import { CERTS } from "../data/certs.js";
 
@@ -32,13 +30,13 @@ function Lightbox({ cert, onClose }) {
         </span>
         <div className="flex shrink-0 items-center gap-5">
           <a
-            href={cert.image}
+            href={cert.document || cert.image}
             target="_blank"
             rel="noreferrer"
             onClick={(e) => e.stopPropagation()}
             className="wipe-link text-acid"
           >
-            full size ↗
+            open original ↗
           </a>
           <button
             onClick={onClose}
@@ -74,15 +72,12 @@ export default function CertGallery() {
     document.title = "Certificates — Aditya Saraswat";
     window.scrollTo(0, 0);
     return () => {
-      document.title = "Aditya Saraswat — Backend Engineer";
+      document.title = "Aditya Saraswat — Computer Science & Data Science";
     };
   }, []);
 
   return (
     <div className="grain min-h-svh">
-      <Backdrop />
-      <Cursor />
-
       <header className="sticky top-0 z-40 border-b border-line bg-ink/85 backdrop-blur-md">
         <nav className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 md:px-8">
           <a href="/" className="font-mono text-sm font-bold tracking-tight text-bone">

@@ -1,127 +1,141 @@
-import { useRef } from "react";
-import Reveal, { SectionHeading } from "./Reveal.jsx";
+import Reveal, { SectionLabel } from "./Reveal.jsx";
+import {
+  JournalVisual,
+  CineSearchVisual,
+  FinoraVisual,
+  CredSightVisual,
+} from "./ProjectVisuals.jsx";
 
 const PROJECTS = [
   {
-    n: "001",
-    name: "Railway Seat Optimization",
-    tag: "production · under CRIS",
-    desc: "Backend system that finds the best vacant seat between any two stations — querying reservation charts and filtering by journey segment, coach, class, berth type and travel date.",
-    stack: ["Java", "Spring Boot", "PostgreSQL", "REST"],
-    links: [],
-  },
-  {
-    n: "002",
-    name: "Journal App",
-    tag: "backend · in progress",
-    desc: "Journal management backend with clean controller → service → repository layering, user management APIs and MongoDB persistence. Spring Security + JWT auth landing next.",
-    stack: ["Java", "Spring Boot", "MongoDB", "Spring Security"],
-    links: [["github", "https://github.com/adityasx69/journalApp"]],
-  },
-  {
-    n: "003",
-    name: "CineSearch",
-    tag: "frontend · live",
-    desc: "Real-time movie discovery platform where trending rankings update from live user search activity. Debounced search over the TMDB API with Appwrite handling analytics and storage.",
-    stack: ["React", "Vite", "Tailwind", "Appwrite", "TMDB"],
-    links: [
-      ["live", "https://movie.projects.adityasaraswat.me/"],
-      ["github", "https://github.com/adityasx69/web-dev/tree/main/react/movie-app"],
+    number: "01",
+    name: "Finora AI",
+    category: "CROSS-PLATFORM FINANCE · IN PROGRESS",
+    description:
+      "A personal finance platform in development for managing expenses and budgets across web and mobile, with analytics for making spending patterns easier to understand.",
+    stack: ["React", "React Native", "Spring Boot", "Spring Cloud Gateway", "PostgreSQL", "Python", "FastAPI", "Docker", "AWS"],
+    notes: [
+      "Developing web and mobile clients backed by Spring Boot services and REST APIs.",
+      "Implementing JWT authentication, resource-level authorization, transaction management and budget tracking.",
+      "Building a Python analytics service for machine-learning spending insights and forecasting, with natural-language finance queries.",
+      "Automating containerized deployment and cloud infrastructure with AWS CDK, ECS, ECR and GitHub Actions.",
     ],
+    linkStatus: "IN DEVELOPMENT · NO PUBLIC SOURCE LINK",
+    visual: <FinoraVisual />,
+  },
+  {
+    number: "02",
+    name: "CredSight",
+    category: "EXPLAINABLE CREDIT RISK · IN PROGRESS",
+    description:
+      "An explainable credit-risk assessment project in development, combining default prediction with clear explanations of the factors behind each estimate.",
+    stack: ["Python", "XGBoost", "scikit-learn", "SHAP", "FastAPI"],
+    notes: [
+      "Developing a validated data pipeline with preprocessing and class-imbalance handling.",
+      "Comparing Logistic Regression and XGBoost, with randomized search and stratified cross-validation.",
+      "Tuning decision thresholds and probability calibration for risk classification.",
+      "Using SHAP for global and individual explanations, with a FastAPI endpoint and interactive estimate view.",
+    ],
+    linkStatus: "IN DEVELOPMENT · NO PUBLIC SOURCE LINK",
+    visual: <CredSightVisual />,
+  },
+  {
+    number: "03",
+    name: "Journal App",
+    category: "BACKEND APPLICATION",
+    description:
+      "A journal management backend with user management APIs and journal CRUD operations, backed by MongoDB and organized around clear service boundaries.",
+    stack: ["Java", "Spring Boot", "MongoDB", "Spring Security"],
+    notes: [
+      "Separates request handling, application logic, models and repository access into focused layers.",
+      "Provides user-management and journal CRUD APIs with MongoDB persistence.",
+      "The resume lists Spring Security and JWT authentication as ongoing work.",
+    ],
+    links: [["SOURCE", "https://github.com/adityasx69/journalApp"]],
+    visual: <JournalVisual />,
+  },
+  {
+    number: "04",
+    name: "CineSearch",
+    category: "MOVIE DISCOVERY",
+    description:
+      "A movie discovery app that searches the TMDB catalogue and ranks trending titles from live search activity.",
+    stack: ["React", "Vite", "Tailwind CSS", "Appwrite", "TMDB API"],
+    notes: [
+      "Debounces searches before requesting movie data from TMDB.",
+      "Uses Appwrite to store search activity and support the trending ranking.",
+      "Built as an interactive React application with a Vite toolchain.",
+    ],
+    links: [
+      ["LIVE DEMO", "https://movie.projects.adityasaraswat.me/"],
+      ["SOURCE", "https://github.com/adityasx69/web-dev/tree/main/react/movie-app"],
+    ],
+    visual: <CineSearchVisual />,
   },
 ];
 
-// mouse-tracked tilt without a library
-function TiltCard({ children }) {
-  const ref = useRef(null);
-
-  const onMove = (e) => {
-    const el = ref.current;
-    if (!el || window.matchMedia("(pointer: coarse)").matches) return;
-    const r = el.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    el.style.transform = `perspective(900px) rotateY(${px * 7}deg) rotateX(${-py * 7}deg) translateZ(0)`;
-    el.style.setProperty("--mx", `${(px + 0.5) * 100}%`);
-    el.style.setProperty("--my", `${(py + 0.5) * 100}%`);
-  };
-  const onLeave = () => {
-    if (ref.current) ref.current.style.transform = "perspective(900px)";
-  };
-
+function ProjectRow({ project, reverse }) {
   return (
-    <div
-      ref={ref}
-      onMouseMove={onMove}
-      onMouseLeave={onLeave}
-      className="group relative h-full border border-line bg-panel/90 backdrop-blur-md transition-[border-color,transform] duration-200 hover:border-acid/60"
-      style={{ transformStyle: "preserve-3d" }}
-    >
-      {/* cursor-following glow */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{
-          background:
-            "radial-gradient(420px circle at var(--mx, 50%) var(--my, 50%), rgb(208 242 36 / 0.09), transparent 65%)",
-        }}
-      />
-      {children}
-    </div>
+    <article className={reverse ? "project-row is-reversed" : "project-row"}>
+      <Reveal className="project-visual-reveal">
+        <div className="project-visual-wrap">{project.visual}</div>
+      </Reveal>
+
+      <Reveal delay={0.12} className="project-copy-reveal">
+        <div className="project-meta">
+          <span>PROJECT {project.number}</span>
+          <span>{project.category}</span>
+        </div>
+        <h3 className="project-title">{project.name}</h3>
+        <p className="project-description">{project.description}</p>
+
+        <ul className="project-stack" aria-label="Technologies used">
+          {project.stack.map((item) => <li key={item}>{item}</li>)}
+        </ul>
+
+        <div className="project-links">
+          {project.links ? project.links.map(([label, href]) => (
+            <a href={href} target="_blank" rel="noreferrer" key={label} className="text-link">
+              {label} <span aria-hidden="true">↗</span>
+            </a>
+          )) : (
+            <span className="project-private-note">{project.linkStatus}</span>
+          )}
+        </div>
+
+        <details className="implementation-notes">
+          <summary>IMPLEMENTATION NOTES <span aria-hidden="true">+</span></summary>
+          <ul>
+            {project.notes.map((note) => <li key={note}>{note}</li>)}
+          </ul>
+        </details>
+      </Reveal>
+    </article>
   );
 }
 
 export default function Projects() {
   return (
-    <section id="projects" className="mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-36">
-      <SectionHeading index="03" title="Projects" hint="things I actually shipped" />
+    <section id="work" className="section-section work-section" aria-labelledby="work-title">
+      <SectionLabel index="03" title="SELECTED WORK" />
 
-      <div className="grid gap-6 lg:grid-cols-3">
-        {PROJECTS.map((p, i) => (
-          <Reveal key={p.n} delay={i * 0.12} className="h-full">
-            <TiltCard>
-              <div className="flex h-full flex-col p-7" style={{ transform: "translateZ(24px)" }}>
-                <div className="flex items-start justify-between">
-                  <span className="text-outline-acid font-display text-5xl font-bold">
-                    {p.n}
-                  </span>
-                  <span className="border border-line px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-fog">
-                    {p.tag}
-                  </span>
-                </div>
+      <div className="section-intro work-intro">
+        <Reveal>
+          <h2 id="work-title" className="display-heading section-display-heading">
+            <span>BUILT TO BE</span>
+            <span className="outline-text">USED<span className="accent-period">.</span></span>
+          </h2>
+        </Reveal>
+        <Reveal delay={0.12}>
+          <p className="section-intro-copy">
+            Backend, data and interactive products built around real workflows and practical details.
+          </p>
+        </Reveal>
+      </div>
 
-                <h3 className="mt-6 font-display text-2xl font-semibold text-bone transition-colors group-hover:text-acid">
-                  {p.name}
-                </h3>
-                <p className="mt-3 flex-1 font-mono text-[13px] leading-relaxed text-fog">
-                  {p.desc}
-                </p>
-
-                <div className="mt-6 flex flex-wrap gap-2">
-                  {p.stack.map((t) => (
-                    <span key={t} className="border border-line px-2 py-0.5 font-mono text-[10px] text-fog">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-
-                {p.links.length > 0 && (
-                  <div className="mt-5 flex gap-5 border-t border-line pt-4">
-                    {p.links.map(([label, url]) => (
-                      <a
-                        key={label}
-                        href={url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="wipe-link font-mono text-xs text-acid"
-                      >
-                        {label} ↗
-                      </a>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </TiltCard>
-          </Reveal>
+      <div className="project-list">
+        {PROJECTS.map((project, index) => (
+          <ProjectRow key={project.number} project={project} reverse={index % 2 === 1} />
         ))}
       </div>
     </section>

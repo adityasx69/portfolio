@@ -1,66 +1,90 @@
-import Reveal from "./Reveal.jsx";
+import { useState } from "react";
+import Reveal, { SectionLabel } from "./Reveal.jsx";
 
+const EMAIL = "adityassx1@gmail.com";
 const SOCIALS = [
-  ["github", "https://github.com/adityasx69"],
-  ["linkedin", "https://www.linkedin.com/in/adityasaraswat01/"],
-  ["leetcode", "https://leetcode.com/u/adityassx/"],
-  ["codeforces", "https://codeforces.com/profile/adityassx"],
+  ["GITHUB", "https://github.com/adityasx69"],
+  ["LINKEDIN", "https://www.linkedin.com/in/adityasaraswat01/"],
+  ["LEETCODE", "https://leetcode.com/u/adityassx/"],
+  ["CODEFORCES", "https://codeforces.com/profile/adityassx"],
 ];
 
 export default function Contact() {
+  const [status, setStatus] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+    if (!form.reportValidity()) return;
+
+    const formData = new FormData(form);
+    const name = String(formData.get("name") || "").trim();
+    const email = String(formData.get("email") || "").trim();
+    const message = String(formData.get("message") || "").trim();
+    const subject = encodeURIComponent("Portfolio enquiry from " + name);
+    const body = encodeURIComponent("From: " + name + " (" + email + ")\n\n" + message);
+
+    setStatus("Your email app should open with a prepared draft. Send it there to deliver your message.");
+    window.location.href = "mailto:" + EMAIL + "?subject=" + subject + "&body=" + body;
+  };
+
   return (
-    <section id="contact" className="border-t border-line">
-      <div className="mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-36">
+    <section id="contact" className="section-section contact-section" aria-labelledby="contact-title">
+      <SectionLabel index="08" title="CONTACT" />
+
+      <div className="contact-layout">
         <Reveal>
-          <p className="font-mono text-xs uppercase tracking-[0.3em] text-acid">
-            07 · next station
-          </p>
-          <h2 className="mt-6 font-display text-[11vw] font-bold uppercase leading-[0.95] tracking-tight md:text-8xl">
-            <span className="block text-bone">Let's build</span>
-            <span className="text-outline-acid block">something</span>
+          <h2 id="contact-title" className="display-heading contact-heading">
+            <span>LET’S</span>
+            <span className="outline-text">CONNECT<span className="accent-period">.</span></span>
           </h2>
         </Reveal>
 
-        <Reveal delay={0.15}>
-          <div className="mt-12 flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
-            <div>
-              <p className="max-w-sm font-mono text-sm leading-relaxed text-fog">
-                Open to backend / full-stack internships and freelance work.
-                Replies faster than a PostgreSQL index scan.
-              </p>
-              <a
-                href="mailto:adityassx1@gmail.com"
-                className="wipe-link mt-6 inline-block font-display text-2xl font-semibold text-acid md:text-4xl"
-              >
-                adityassx1@gmail.com
-              </a>
-            </div>
-
-            <ul className="flex flex-wrap gap-x-7 gap-y-3 font-mono text-sm">
-              {SOCIALS.map(([label, url]) => (
+        <Reveal delay={0.12}>
+          <div className="contact-copy">
+            <p className="lead-copy">
+              Have a role, project or conversation in mind? I’d be glad to hear from you.
+            </p>
+            <a className="contact-email text-link" href={"mailto:" + EMAIL}>
+              <span aria-hidden="true">✉</span> {EMAIL} <span aria-hidden="true">↗</span>
+            </a>
+            <ul className="social-links" aria-label="Social profiles">
+              {SOCIALS.map(([label, href]) => (
                 <li key={label}>
-                  <a
-                    href={url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="wipe-link text-fog transition-colors hover:text-acid"
-                  >
-                    {label} ↗
+                  <a className="text-link" href={href} target="_blank" rel="noreferrer">
+                    {label} <span aria-hidden="true">↗</span>
                   </a>
                 </li>
               ))}
             </ul>
+
+            <form className="contact-form" onSubmit={handleSubmit}>
+              <div className="form-field">
+                <label htmlFor="contact-name">NAME</label>
+                <input id="contact-name" name="name" autoComplete="name" required minLength={2} placeholder="Your name" />
+              </div>
+              <div className="form-field">
+                <label htmlFor="contact-email">EMAIL</label>
+                <input id="contact-email" name="email" type="email" autoComplete="email" required placeholder="you@example.com" />
+              </div>
+              <div className="form-field form-field-message">
+                <label htmlFor="contact-message">MESSAGE</label>
+                <textarea id="contact-message" name="message" required minLength={10} rows={3} placeholder="Write your message…" />
+              </div>
+              <div className="form-submit-row">
+                <button className="send-button" type="submit">
+                  SEND MESSAGE <span aria-hidden="true">↗</span>
+                </button>
+                <p className="form-status" role="status" aria-live="polite">{status}</p>
+              </div>
+            </form>
           </div>
         </Reveal>
       </div>
 
-      <footer className="border-t border-line">
-        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-6 font-mono text-[11px] text-fog/70 md:flex-row md:items-center md:justify-between md:px-8">
-          <span>© {new Date().getFullYear()} aditya saraswat</span>
-          <a href="https://adityasaraswat.me" className="wipe-link text-fog/70 hover:text-acid">
-            adityasaraswat.me
-          </a>
-        </div>
+      <footer className="site-footer">
+        <span>© {new Date().getFullYear()} ADITYA SARASWAT</span>
+        <a href="#top">BACK TO TOP <span aria-hidden="true">↑</span></a>
       </footer>
     </section>
   );

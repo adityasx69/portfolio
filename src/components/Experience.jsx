@@ -1,81 +1,73 @@
-import Reveal, { SectionHeading } from "./Reveal.jsx";
+import Reveal, { SectionLabel } from "./Reveal.jsx";
 
-const STOPS = [
+const BACKGROUND = [
   {
-    station: "STN 02 — NEW DELHI",
-    role: "Backend Developer Intern",
-    org: "CRIS · Ministry of Railways",
-    period: "may 2026 — present",
-    live: true,
-    points: [
-      "Building the Railway Reservation Seat Optimization System — REST APIs and service-layer logic in Java + Spring Boot on PostgreSQL.",
-      "Implementing route-segment based seat filtering that validates station-to-station journeys and recommends accurate vacant seats.",
-      "Designing schemas for reservation charts, station routes, coaches and berth availability workflows.",
-    ],
-    stack: ["Java", "Spring Boot", "PostgreSQL", "REST APIs"],
+    dates: "MAY 2026 — JUL 2026",
+    type: "EXPERIENCE",
+    title: "Backend Developer Intern",
+    place: "Centre for Railway Information Systems · Ministry of Railways · New Delhi",
+    body: "Developed REST APIs and service-layer logic using Java, Spring Boot and PostgreSQL for reservation chart and seat-availability workflows. Implemented route-segment filtering to validate station-to-station journeys and recommend accurate vacant seats.",
   },
   {
-    station: "STN 01 — NEW DELHI",
-    role: "Data Analytics Intern",
-    org: "CRIS · Ministry of Railways",
-    period: "jun 2025 — jul 2025",
-    points: [
-      "Analyzed large-scale Indian Railways freight data end to end.",
-      "Built geospatial visualizations with Python, GeoPandas and Plotly; shipped Tableau dashboards used for operational insights.",
-    ],
-    stack: ["Python", "GeoPandas", "Plotly", "Tableau"],
+    dates: "JUN 2025 — JUL 2025",
+    type: "EXPERIENCE",
+    title: "Data Analytics Intern",
+    place: "Centre for Railway Information Systems · Ministry of Railways · New Delhi",
+    body: "Analyzed Indian Railways freight data, built geospatial visualizations with Python, GeoPandas and Plotly, and created Tableau dashboards for operational insights.",
+  },
+  {
+    dates: "EXPECTED 2028",
+    type: "EDUCATION",
+    title: "B.Tech · Computer Science Engineering",
+    place: "Manipal University Jaipur · Jaipur, India",
+    body: "Data Science specialization.",
+  },
+  {
+    dates: "MAY 2024",
+    type: "EDUCATION · CLASS XII",
+    title: "Class XII",
+    place: "B.S. International School",
+    body: "Secondary education.",
+  },
+  {
+    dates: "MAR 2022",
+    type: "EDUCATION · CLASS X",
+    title: "Class X",
+    place: "Delhi Public School Indirapuram",
+    body: "Secondary education.",
   },
 ];
 
 export default function Experience() {
   return (
-    <section id="experience" className="mx-auto max-w-6xl px-5 py-24 md:px-8 md:py-36">
-      <SectionHeading index="02" title="Experience" hint="route map · origin → current" />
+    <section id="background" className="section-section background-section" aria-labelledby="background-title">
+      <SectionLabel index="05" title="BACKGROUND" />
 
-      <div className="relative ml-2 md:ml-6">
-        {/* the railway line */}
-        <div className="rail-line absolute bottom-6 left-0 top-2 w-px" aria-hidden="true" />
+      <div className="background-layout">
+        <Reveal>
+          <h2 id="background-title" className="display-heading background-heading">
+            <span>THE</span>
+            <span className="outline-text">DETAILS<span className="accent-period">.</span></span>
+          </h2>
+        </Reveal>
 
-        {STOPS.map((stop, i) => (
-          <Reveal key={stop.station} delay={i * 0.1} className="relative pb-16 pl-8 last:pb-0 md:pl-14">
-            {/* station marker */}
-            <span className="absolute -left-[9px] top-1.5 flex h-[19px] w-[19px] items-center justify-center rounded-full border border-acid bg-ink">
-              <span className={`h-[7px] w-[7px] rounded-full bg-acid ${stop.live ? "animate-pulse" : ""}`} />
-            </span>
-
-            <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-acid">
-              {stop.station}
-              {stop.live && <span className="ml-3 text-bone">● in service</span>}
-            </p>
-
-            <div className="mt-3 border border-line bg-panel/90 p-6 backdrop-blur-md transition-colors hover:border-acid/50 md:p-8">
-              <div className="flex flex-col justify-between gap-2 md:flex-row md:items-baseline">
-                <h3 className="font-display text-xl font-semibold text-bone md:text-2xl">
-                  {stop.role}
-                </h3>
-                <span className="font-mono text-xs text-fog">{stop.period}</span>
-              </div>
-              <p className="mt-1 font-mono text-sm text-acid/90">{stop.org}</p>
-
-              <ul className="mt-5 space-y-2.5">
-                {stop.points.map((p) => (
-                  <li key={p} className="flex gap-3 font-mono text-[13px] leading-relaxed text-fog">
-                    <span className="mt-px shrink-0 text-acid">▸</span>
-                    {p}
-                  </li>
-                ))}
-              </ul>
-
-              <div className="mt-6 flex flex-wrap gap-2">
-                {stop.stack.map((t) => (
-                  <span key={t} className="border border-line px-2.5 py-1 font-mono text-[11px] text-fog">
-                    {t}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </Reveal>
-        ))}
+        <div className="timeline-list">
+          {BACKGROUND.map((item, index) => (
+            <Reveal key={item.title + item.dates} delay={index * 0.06}>
+              <article className="timeline-entry">
+                <div className="timeline-date">
+                  <span>{item.dates}</span>
+                  <span className="timeline-type">{item.type}</span>
+                </div>
+                <div className="timeline-copy">
+                  <h3>{item.title}</h3>
+                  <p className="timeline-place">{item.place}</p>
+                  {item.body && <p className="body-copy">{item.body}</p>}
+                </div>
+              </article>
+            </Reveal>
+          ))}
+        </div>
       </div>
     </section>
   );
